@@ -1120,8 +1120,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
 // SUPABASE CONFIG
 // Remplacez par vos vraies clés
 // ══════════════════════════════
-const SUPABASE_URL  = 'VOTRE_PROJECT_URL';
-const SUPABASE_KEY  = 'VOTRE_ANON_KEY';
+const SUPABASE_URL  = 'https://tpphfwjulhskeqixpxxy.supabase.co';
+const SUPABASE_KEY  = 'sb_publishable_UvjfON-tmQc1k0uX5VSfyA_eRiTcvKn';
 let supabaseClient = null;
 
 function initSupabase(){
@@ -1479,7 +1479,7 @@ async function doSave(){
     return;
   }
 
-  if(supabaseClient && SUPABASE_URL !== 'VOTRE_PROJECT_URL'){
+  if(supabaseClient && SUPABASE_URL !== 'https://tpphfwjulhskeqixpxxy.supabase.co'){
     showToast('Enregistrement en cours...');
     try {
       const { data: result, error } = await supabaseClient
@@ -1503,7 +1503,7 @@ async function doSave(){
 
 // ── Charger stats réelles depuis Supabase ──
 async function updateHomeStats(){
-  if(!supabaseClient || SUPABASE_URL === 'VOTRE_PROJECT_URL') return;
+  if(!supabaseClient || SUPABASE_URL === 'https://tpphfwjulhskeqixpxxy.supabase.co') return;
   try {
     const { count } = await supabaseClient
       .from('pdv_recensements')
