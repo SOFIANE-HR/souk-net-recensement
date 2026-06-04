@@ -1479,7 +1479,7 @@ async function doSave(){
     return;
   }
 
-  if(supabaseClient && SUPABASE_URL !== 'https://tpphfwjulhskeqixpxxy.supabase.co'){
+  if(supabaseClient){
     showToast('Enregistrement en cours...');
     try {
       const { data: result, error } = await supabaseClient
@@ -1503,7 +1503,7 @@ async function doSave(){
 
 // ── Charger stats réelles depuis Supabase ──
 async function updateHomeStats(){
-  if(!supabaseClient || SUPABASE_URL === 'https://tpphfwjulhskeqixpxxy.supabase.co') return;
+  if(!supabaseClient) return;
   try {
     const { count } = await supabaseClient
       .from('pdv_recensements')
