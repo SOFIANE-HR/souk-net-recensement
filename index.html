@@ -96,6 +96,18 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
 .btn-start:active{transform:scale(.97)}
 
 
+
+/* ── DONNÉES AVANCÉES ── */
+.advanced-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,192,0,.06);border:1px solid var(--border2);
+  border-radius:8px;padding:12px 14px;cursor:pointer;margin:0 0 0 0;
+}
+.advanced-toggle-title{font-size:.72rem;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.advanced-arrow{font-size:.85rem;color:var(--gold);transition:transform .25s}
+.advanced-arrow.open{transform:rotate(180deg)}
+.advanced-body{display:none;padding-top:4px}
+.advanced-body.open{display:block}
 /* ── CHECKBOXES JOURS ── */
 .days-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .day-cb{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
@@ -642,8 +654,24 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
       <div class="form-group"><label class="form-label">Nom du commerce *</label><input class="form-input" type="text" placeholder="Ex: Épicerie El Amel"/></div>
       <div class="form-group"><label class="form-label">Gérant / Resp achat</label><input class="form-input" type="text" placeholder="Nom du gérant / responsable achat"/></div>
       <div class="form-group"><label class="form-label">Repère</label><input class="form-input" type="text" placeholder="Ex: En face de la mosquée, côté pharmacie..."/></div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+          Contacts
+          <button type="button" onclick="addContact()" style="background:rgba(255,192,0,.12);border:1px solid var(--gold);border-radius:20px;padding:3px 12px;font-size:.65rem;font-weight:800;color:var(--gold);cursor:pointer">+ Ajouter</button>
+        </label>
+        <div id="contacts-list">
+          <div class="contact-row" style="display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:6px;margin-bottom:6px">
+            <select class="form-select" style="font-size:.72rem;padding:9px 8px">
+              <option>Gérant</option><option>Resp achat</option><option>Caissier</option><option>Livreur</option><option>Autre</option>
+            </select>
+            <input class="form-input" type="text" placeholder="Nom" style="font-size:.78rem"/>
+            <input class="form-input" type="tel" placeholder="06XX XX XX XX" style="font-size:.78rem"/>
+            <button type="button" onclick="removeContact(this)" style="background:rgba(255,68,68,.1);border:1px solid var(--red);border-radius:6px;color:var(--red);font-size:.8rem;cursor:pointer;padding:0 8px">✕</button>
+          </div>
+        </div>
+      </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" type="tel" placeholder="06XX XX XX XX"/></div>
+        <div class="form-group" style="display:none"></div>
         <div class="form-group"><label class="form-label">Wilaya</label>
           <select class="form-select">
             <option>Alger (16)</option><option>Oran (31)</option><option>Constantine (25)</option>
@@ -733,30 +761,25 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         </div>
         <div class="form-group"><label class="form-label">Catégorie CA</label>
           <select class="form-select">
-            <option>A - +5M DZD/mois</option><option>B - 2-5M DZD</option>
-            <option>C - 500K-2M DZD</option><option>D - -500K DZD</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
           </select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Surface (m²)</label><input class="form-input" type="number" placeholder="Ex: 120"/></div>
-        <div class="form-group"><label class="form-label">Nb. Caisses</label><input class="form-input" type="number" placeholder="Ex: 3"/></div>
+
+
+      <div class="form-group"><label class="form-label">Réserve / Stockage</label>
+        <select class="form-select"><option>Disponible</option><option>Non disponible</option></select>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Type de caisse</label>
-          <select class="form-select">
-            <option>Tiroir</option><option>Electronique</option><option>Caisse enregistreuse</option><option>Mixte</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Nb. Employés (temps plein)</label><input class="form-input" type="number" placeholder="Ex: 2"/></div>
+        <div class="form-group"><label class="form-label">Surface globale (m²)</label><input class="form-input" type="number" id="surf-globale" placeholder="Ex: 200" oninput="calcSurface()"/></div>
+        <div class="form-group"><label class="form-label">Surface dédiée (m²)</label><input class="form-input" type="number" id="surf-dediee" placeholder="Ex: 80" oninput="calcSurface()"/></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Réserve / Stockage</label>
-          <select class="form-select">
-            <option>Disponible</option><option>Non disponible</option>
-          </select>
+      <div class="form-group">
+        <label class="form-label">% Superficie dédiée <span style="color:var(--gold);font-weight:900" id="surf-pct-display">— %</span></label>
+        <div style="height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-top:6px">
+          <div id="surf-pct-bar" style="height:100%;background:var(--gold);border-radius:4px;width:0%;transition:width .3s"></div>
         </div>
-        <div class="form-group"><label class="form-label">Surface réserve (m²)</label><input class="form-input" type="number" placeholder="Ex: 10"/></div>
+        <input type="hidden" id="surf-pct" value=""/>
       </div>
       <div class="form-group"><label class="form-label">Canal de distribution</label>
         <select class="form-select">
@@ -805,44 +828,52 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
           </optgroup>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Activité FMCG</label>
-        <select class="form-select">
-          <option>Retail uniquement</option><option>Wholesale uniquement</option>
-          <option>Retail + Wholesale</option><option>Demi-gros</option>
-        </select>
-      </div>
+
       <div class="form-row">
         <div class="form-group"><label class="form-label">% Rayon Alimentation</label><input class="form-input" type="number" placeholder="Ex: 50"/></div>
         <div class="form-group"><label class="form-label">% Rayon Boissons</label><input class="form-input" type="number" placeholder="Ex: 30"/></div>
       </div>
     </div>
 
-    <!-- Présence Catégories -->
-    <div class="form-section">
-      <div class="form-section-title">🛒 Présence Catégories FMCG</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="form-group"><label class="form-label">Boissons Gazeuses</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Jus / Nectars</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Eaux minérales</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Produits laitiers</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Huiles & Corps gras</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Épicerie sèche (pâtes, semoule...)</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Détergents / Entretien</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Hygiène / Beauté</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Confiserie / Biscuiterie</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group"><label class="form-label">Surgélés / Froid</label>
-          <select class="form-select"><option>Oui</option><option>Non</option></select></div>
-        <div class="form-group" style="grid-column:1/-1"><label class="form-label">Réfrigérateur / Chambre froide</label>
-          <select class="form-select"><option>Disponible</option><option>Non disponible</option></select></div>
+    <!-- Données Avancées -->
+    <div class="form-section" style="padding-bottom:0">
+      <div class="advanced-toggle" onclick="toggleAdvanced()">
+        <span class="advanced-toggle-title">📊 Données Avancées</span>
+        <span class="advanced-arrow" id="adv-arrow">▼</span>
+      </div>
+      <div class="advanced-body" id="adv-body">
+        <div style="padding-top:12px">
+          <div class="form-section-title" style="padding-top:4px">🛒 Présence Catégories FMCG</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="form-group"><label class="form-label">Boissons Gazeuses</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Jus / Nectars</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Eaux minérales</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Produits laitiers</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Huiles & Corps gras</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Épicerie sèche</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Détergents / Entretien</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Hygiène / Beauté</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Confiserie / Biscuiterie</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group"><label class="form-label">Surgélés / Froid</label>
+              <select class="form-select"><option>Oui</option><option>Non</option></select></div>
+            <div class="form-group" style="grid-column:1/-1"><label class="form-label">Réfrigérateur / Chambre froide</label>
+              <select class="form-select"><option>Disponible</option><option>Non disponible</option></select></div>
+          </div>
+          <div class="form-section-title" style="margin-top:12px">🏪 Infrastructure</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Superficie totale (m²)</label><input class="form-input" type="number" placeholder="Ex: 120"/></div>
+            <div class="form-group"><label class="form-label">Nb. Caisses</label><input class="form-input" type="number" placeholder="Ex: 3"/></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -888,6 +919,15 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         </select>
       </div>
       <div class="form-group"><label class="form-label">Code client ERP</label><input class="form-input" type="text" placeholder="Ex: ALG-00124"/></div>
+    </div>
+
+    <!-- Consentement -->
+    <div class="form-section">
+      <div class="form-section-title">✅ Consentement</div>
+      <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;padding:12px;background:rgba(255,192,0,.05);border:1px solid var(--border);border-radius:8px">
+        <input type="checkbox" id="consent-cb" style="width:20px;height:20px;margin-top:2px;accent-color:var(--gold);flex-shrink:0"/>
+        <span style="font-size:.78rem;color:var(--text2);line-height:1.5">Le responsable du point de vente a été informé et a <strong style="color:var(--gold)">accepté</strong> que ses données commerciales soient collectées et utilisées dans le cadre du recensement SOUK-NET.</span>
+      </label>
     </div>
 
     <!-- Photos -->
@@ -1637,6 +1677,52 @@ function renderPhotos(){
 function removePhoto(idx){
   photosBase64.splice(idx, 1);
   renderPhotos();
+}
+
+
+// ── MULTI-CONTACTS ──
+function addContact(){
+  const list = document.getElementById('contacts-list');
+  const row = document.createElement('div');
+  row.className = 'contact-row';
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:6px;margin-bottom:6px';
+  row.innerHTML = `
+    <select class="form-select" style="font-size:.72rem;padding:9px 8px">
+      <option>Gérant</option><option>Resp achat</option><option>Caissier</option><option>Livreur</option><option>Autre</option>
+    </select>
+    <input class="form-input" type="text" placeholder="Nom" style="font-size:.78rem"/>
+    <input class="form-input" type="tel" placeholder="06XX XX XX XX" style="font-size:.78rem"/>
+    <button type="button" onclick="removeContact(this)" style="background:rgba(255,68,68,.1);border:1px solid var(--red);border-radius:6px;color:var(--red);font-size:.8rem;cursor:pointer;padding:0 8px">✕</button>`;
+  list.appendChild(row);
+}
+function removeContact(btn){
+  const rows = document.querySelectorAll('.contact-row');
+  if(rows.length > 1) btn.closest('.contact-row').remove();
+  else showToast('Au moins un contact requis');
+}
+
+// ── CALCUL SURFACE % ──
+function calcSurface(){
+  const glob = parseFloat(document.getElementById('surf-globale').value) || 0;
+  const ded  = parseFloat(document.getElementById('surf-dediee').value) || 0;
+  if(glob > 0 && ded > 0){
+    const pct = Math.min(100, Math.round(ded / glob * 100));
+    document.getElementById('surf-pct-display').textContent = pct + ' %';
+    document.getElementById('surf-pct-bar').style.width = pct + '%';
+    document.getElementById('surf-pct').value = pct;
+  } else {
+    document.getElementById('surf-pct-display').textContent = '— %';
+    document.getElementById('surf-pct-bar').style.width = '0%';
+    document.getElementById('surf-pct').value = '';
+  }
+}
+
+// ── DONNÉES AVANCÉES toggle ──
+function toggleAdvanced(){
+  const body  = document.getElementById('adv-body');
+  const arrow = document.getElementById('adv-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }
 
 // ── GPS RÉEL ──
