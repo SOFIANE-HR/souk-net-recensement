@@ -683,21 +683,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         <div class="form-group"><label class="form-label">N° Local / Boutique</label><input class="form-input" type="text" placeholder="Ex: 03"/></div>
       </div>
       <div class="form-group"><label class="form-label">Adresse</label><input class="form-input" type="text" placeholder="Rue, numéro..."/></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Store Location A</label>
-          <select class="form-select">
-            <option>Rue principale</option><option>Rue secondaire</option>
-            <option>Impasse</option><option>Route nationale</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Store Location B</label>
-          <select class="form-select">
-            <option>Zone commerciale</option><option>Zone résidentielle</option>
-            <option>Marché</option><option>Zone industrielle</option><option>Autre</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group"><label class="form-label">Store Location C</label><input class="form-input" type="text" placeholder="Précision de localisation supplémentaire"/></div>
+
       <div class="form-group"><label class="form-label">TDLinx (Code unique PDV)</label><input class="form-input" type="text" placeholder="Code TDLinx si disponible"/></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Personne de contact</label><input class="form-input" type="text" placeholder="Nom contact"/></div>
@@ -768,8 +754,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         <select class="form-select"><option>Disponible</option><option>Non disponible</option></select>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Bloc global (m²)</label><input class="form-input" type="number" id="surf-globale" placeholder="Ex: 200" oninput="calcSurface()"/></div>
-        <div class="form-group"><label class="form-label">Bloc dédié (m²)</label><input class="form-input" type="number" id="surf-dediee" placeholder="Ex: 80" oninput="calcSurface()"/></div>
+        <div class="form-group"><label class="form-label">Bloc global (m)</label><input class="form-input" type="number" id="surf-globale" placeholder="Ex: 200" oninput="calcSurface()"/></div>
+        <div class="form-group"><label class="form-label">Bloc dédié (m)</label><input class="form-input" type="number" id="surf-dediee" placeholder="Ex: 80" oninput="calcSurface()"/></div>
       </div>
       <div class="form-group">
         <label class="form-label">% Bloc dédié <span style="color:var(--gold);font-weight:900" id="surf-pct-display">— %</span></label>
@@ -778,58 +764,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         </div>
         <input type="hidden" id="surf-pct" value=""/>
       </div>
-      <div class="form-group"><label class="form-label">Canal de distribution</label>
-        <select class="form-select">
-          <optgroup label="── Commerce Moderne ──">
-            <option>GMS — Grande et Moyenne Surface</option>
-            <option>GSA — Grande Surface Alimentaire</option>
-            <option>GSS — Grande Surface Spécialisée</option>
-            <option>Cash &amp; Carry</option>
-          </optgroup>
-          <optgroup label="── Commerce Traditionnel ──">
-            <option>Épicerie traditionnelle (Tradi)</option>
-            <option>Marché traditionnel / Souk</option>
-            <option>Kiosque / Tabac-Journaux</option>
-          </optgroup>
-          <optgroup label="── Grossistes ──">
-            <option>Grossiste alimentaire</option>
-            <option>Semi-grossiste / Dépôt</option>
-            <option>Grossiste en boissons</option>
-            <option>Grossiste en produits laitiers</option>
-            <option>Grossiste en produits d'entretien</option>
-            <option>Grossiste en cosmétique / hygiène</option>
-            <option>Grossiste en parapharmacie</option>
-            <option>Grossiste en pharmacie</option>
-            <option>Grossiste fruits et légumes</option>
-          </optgroup>
-          <optgroup label="── Distribution Directe ──">
-            <option>Vente directe (force de vente propre)</option>
-            <option>Agent commercial / Représentant</option>
-            <option>Importateur exclusif</option>
-            <option>Distributeur agréé</option>
-          </optgroup>
-          <optgroup label="── CHR / Foodservice ──">
-            <option>Café / Restaurant / Hôtel (CHR)</option>
-            <option>Restauration rapide / Fast-food</option>
-            <option>Boulangerie / Pâtisserie</option>
-            <option>Traiteur / Collectivité</option>
-          </optgroup>
-          <optgroup label="── Santé / Beauté ──">
-            <option>Pharmacie</option>
-            <option>Parapharmacie</option>
-            <option>Droguerie / Parfumerie</option>
-          </optgroup>
-          <optgroup label="── Digital ──">
-            <option>E-commerce / Livraison à domicile</option>
-            <option>Click &amp; Collect</option>
-          </optgroup>
-        </select>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">% Rayon Alimentation</label><input class="form-input" type="number" placeholder="Ex: 50"/></div>
-        <div class="form-group"><label class="form-label">% Rayon Boissons</label><input class="form-input" type="number" placeholder="Ex: 30"/></div>
-      </div>
+
+
     </div>
 
     <!-- Données Avancées -->
@@ -867,7 +804,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
           </div>
           <div class="form-section-title" style="margin-top:12px">🏪 Infrastructure</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Bloc total (m²)</label><input class="form-input" type="number" placeholder="Ex: 120"/></div>
+            <div class="form-group"><label class="form-label">Bloc total (m)</label><input class="form-input" type="number" placeholder="Ex: 120"/></div>
             <div class="form-group"><label class="form-label">Nb. Caisses</label><input class="form-input" type="number" placeholder="Ex: 3"/></div>
           </div>
         </div>
@@ -1310,12 +1247,12 @@ function collectFormData(){
     raison_gps_non_capture: getInputByLabel('Raison GPS non capturé'),
     type_magasin:          getInputByLabel('Type de magasin'),
     categorie_ca:          getInputByLabel('Catégorie CA'),
-    surface_m2:            parseInt(getInputByLabel('Bloc (m²)')) || null,
+    surface_m2:            parseInt(getInputByLabel('Bloc (m)')) || null,
     nb_caisses:            parseInt(getInputByLabel('Nb. Caisses')) || null,
     type_caisse:           getInputByLabel('Type de caisse'),
     nb_employes:           parseInt(getInputByLabel('Nb. Employés (temps plein)')) || null,
     reserve_disponible:    getInputByLabel('Réserve / Stockage'),
-    surface_reserve:       parseInt(getInputByLabel('Bloc réserve (m²)')) || null,
+    surface_reserve:       parseInt(getInputByLabel('Bloc réserve (m)')) || null,
     canal_distribution:    getInputByLabel('Canal de distribution'),
     activite_fmcg:         getInputByLabel('Activité FMCG'),
     pct_alimentation:      parseInt(getInputByLabel('% Rayon Alimentation')) || null,
