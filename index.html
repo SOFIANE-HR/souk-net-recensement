@@ -501,10 +501,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
       </div>
     </div>
     <span class="badge-live">● LIVE</span>
+    <button onclick="doLogout()" style="background:none;border:none;color:var(--text3);font-size:.65rem;cursor:pointer;padding:0">Quitter</button>
   </div>
   <div class="scroll">
     <div class="home-hero">
-      <div class="home-greeting">Mission terrain · Agent K. Benaissa</div>
+      <div class="home-greeting">Mission terrain · Agent <span id="home-agent-name">—</span></div>
       <div class="home-date" id="home-date"></div>
       <button class="btn-new-analysis" onclick="goTo('sc-form')">＋ Nouveau Recensement PDV</button>
       <button class="dn-btn" onclick="goTo('sc-dn-seg')">📊 Relevé KPI DN — Distribution Numérique</button>
@@ -1194,7 +1195,9 @@ function collectFormData(){
   };
 
   return {
-    agent_nom:             'K. Benaissa',
+    agent_nom:             currentUser?.profile?.nom || 'Agent',
+    user_id:               currentUser?.id || null,
+    user_email:            currentUser?.email || null,
     nom_commerce:          getInputByLabel('Nom du commerce *') || 'PDV sans nom',
     gerant_resp:           getInputByLabel('Gérant / Resp achat'),
     repere:                getInputByLabel('Repère'),
@@ -1442,9 +1445,72 @@ function switchTab(tab){
 }
 
 // ── Auth ──
-function doLogin(){
-  goTo('sc-form');
-  showToast('Connecté · Agent K. Benaissa');
+// ── Session utilisateur courant ──
+let currentUser = null;
+
+async function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const pwd   = document.getElementById('login-pwd').value;
+
+  if(!email || !pwd){
+    showToast('⚠ Saisissez email et mot de passe');
+    return;
+  }
+
+  // Bouton en attente
+  const btn = document.querySelector('#sc-login .btn-gold');
+  btn.textContent = 'Connexion...';
+  btn.disabled = true;
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
+    if(error) throw error;
+
+    currentUser = data.user;
+    // Récupérer le profil (nom, rôle)
+    const { data: profile } = await supabaseClient
+      .from('user_profiles')
+      .select('*')
+      .eq('id', currentUser.id)
+      .single();
+
+    currentUser.profile = profile || { nom: email.split('@')[0], role: 'enqueteur' };
+
+    // Mettre à jour l'affichage
+    document.getElementById('home-agent-name').textContent = currentUser.profile.nom;
+
+    showToast('✓ Connecté · ' + currentUser.profile.nom);
+    goTo('sc-form');
+  } catch(err) {
+    showToast('⚠ ' + (err.message === 'Invalid login credentials' ? 'Email ou mot de passe incorrect' : err.message));
+  } finally {
+    btn.textContent = 'Se connecter';
+    btn.disabled = false;
+  }
+}
+
+async function doLogout(){
+  await supabaseClient.auth.signOut();
+  currentUser = null;
+  goTo('sc-login');
+  showToast('Déconnecté');
+}
+
+// Vérifier session active au démarrage
+async function checkSession(){
+  if(!supabaseClient) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session){
+    currentUser = session.user;
+    const { data: profile } = await supabaseClient
+      .from('user_profiles')
+      .select('*')
+      .eq('id', currentUser.id)
+      .single();
+    currentUser.profile = profile || { nom: session.user.email.split('@')[0], role: 'enqueteur' };
+    document.getElementById('home-agent-name').textContent = currentUser.profile.nom;
+    goTo('sc-home');
+  }
 }
 
 // ── Date ──
@@ -1456,6 +1522,7 @@ function setDate(){
 }
 setDate();
 initSupabase();
+checkSession();
 updateHomeStats();
 
 // ── Fiche PDV ──
