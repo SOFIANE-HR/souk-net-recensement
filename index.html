@@ -97,6 +97,30 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
 
 
 
+
+/* ── INTERFACE SUPERVISEUR ── */
+.sup-header{background:linear-gradient(135deg,#0e2a52,#163464);padding:16px;border-bottom:1px solid var(--border)}
+.sup-title{font-size:1rem;font-weight:800;color:var(--gold);letter-spacing:1px}
+.sup-sub{font-size:.65rem;color:var(--text3);margin-top:2px}
+.sup-kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 16px}
+.sup-kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sup-kpi-val{font-size:1.6rem;font-weight:900;color:var(--gold)}
+.sup-kpi-lbl{font-size:.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px}
+.agent-card{
+  margin:0 16px 10px;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;cursor:pointer;
+}
+.agent-card:active{transform:scale(.99)}
+.agent-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.agent-avatar-lg{width:40px;height:40px;border-radius:50%;background:var(--card2);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:var(--gold);flex-shrink:0}
+.agent-info-lg{flex:1;padding:0 10px}
+.agent-name-lg{font-size:.88rem;font-weight:700;color:var(--text)}
+.agent-stats-lg{font-size:.62rem;color:var(--text3);margin-top:2px}
+.agent-pdv-count{font-size:1.1rem;font-weight:900;color:var(--gold)}
+.filter-bar{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.65rem;font-weight:700;color:var(--text2);white-space:nowrap;cursor:pointer;flex-shrink:0}
+.filter-chip.active{background:rgba(255,192,0,.12);border-color:var(--gold);color:var(--gold)}
 /* ── DONNÉES AVANCÉES ── */
 .advanced-toggle{
   display:flex;align-items:center;justify-content:space-between;
@@ -991,6 +1015,59 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
 </div>
 
 <!-- ══════════════════════════════
+     INTERFACE SUPERVISEUR
+══════════════════════════════ -->
+<div class="screen" id="sc-supervisor">
+  <div class="sup-header">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div class="sup-title">👑 Espace Superviseur</div>
+        <div class="sup-sub" id="sup-name">—</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="goTo('sc-form')" class="btn-gold" style="padding:8px 14px;font-size:.7rem;border-radius:20px;width:auto">＋ Saisir PDV</button>
+        <button onclick="doLogout()" style="background:none;border:none;color:var(--text3);font-size:.65rem;cursor:pointer">Quitter</button>
+      </div>
+    </div>
+  </div>
+  <div class="scroll">
+    <!-- KPIs équipe -->
+    <div class="sup-kpi-grid">
+      <div class="sup-kpi"><div class="sup-kpi-val" id="sup-total-pdv">0</div><div class="sup-kpi-lbl">PDV Total</div></div>
+      <div class="sup-kpi"><div class="sup-kpi-val" id="sup-total-agents">0</div><div class="sup-kpi-lbl">Agents Actifs</div></div>
+      <div class="sup-kpi"><div class="sup-kpi-val" id="sup-today">0</div><div class="sup-kpi-lbl">Saisies Aujourd'hui</div></div>
+      <div class="sup-kpi"><div class="sup-kpi-val" id="sup-week">0</div><div class="sup-kpi-lbl">Cette Semaine</div></div>
+    </div>
+
+    <!-- Filtre par agent -->
+    <div class="section-title">Filtrer par agent</div>
+    <div class="filter-bar" id="sup-agent-filters">
+      <div class="filter-chip active" onclick="filterByAgent(null,this)">Tous</div>
+    </div>
+
+    <!-- Liste PDV filtrés -->
+    <div class="section-title">Points de Vente <span class="section-count" id="sup-pdv-count">0</span></div>
+    <div id="sup-pdv-list">
+      <div style="text-align:center;padding:40px 16px;color:var(--text3)">
+        <div style="font-size:2rem;margin-bottom:8px">⏳</div>
+        <div style="font-size:.78rem">Chargement...</div>
+      </div>
+    </div>
+
+    <!-- Performance agents -->
+    <div class="section-title">Performance Agents</div>
+    <div id="sup-agents-list"></div>
+
+    <div style="height:20px"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="loadSupervisorData()"><div class="nav-icon">📊</div><div class="nav-label">Tableau bord</div></div>
+    <div class="nav-item" onclick="goTo('sc-form')"><div class="nav-icon">➕</div><div class="nav-label">Saisir PDV</div></div>
+    <div class="nav-item" onclick="doLogout()"><div class="nav-icon">🚪</div><div class="nav-label">Quitter</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
      KPI DN — SEGMENTS
 ══════════════════════════════ -->
 <div class="screen" id="sc-dn-seg">
@@ -1190,6 +1267,121 @@ function collectFormData(){
     notes_terrain:         document.querySelector('.form-textarea')?.value || '',
     ...cats
   };
+}
+
+
+// ══════════════════════════════
+// INTERFACE SUPERVISEUR
+// ══════════════════════════════
+let supAllPDV = [];
+let supFilterAgent = null;
+
+async function loadSupervisorData(){
+  if(!supabaseClient) return;
+  document.getElementById('sup-name').textContent = currentUser?.profile?.nom || '';
+
+  try {
+    // Tous les PDV
+    const { data: pdvs, count } = await supabaseClient
+      .from('pdv_recensements')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false });
+
+    supAllPDV = pdvs || [];
+
+    // KPIs
+    document.getElementById('sup-total-pdv').textContent = supAllPDV.length;
+
+    // Agents uniques
+    const agents = [...new Set(supAllPDV.map(p => p.agent_nom).filter(Boolean))];
+    document.getElementById('sup-total-agents').textContent = agents.length;
+
+    // Aujourd'hui
+    const today = new Date().toDateString();
+    const todayCount = supAllPDV.filter(p => new Date(p.created_at).toDateString() === today).length;
+    document.getElementById('sup-today').textContent = todayCount;
+
+    // Cette semaine
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekCount = supAllPDV.filter(p => new Date(p.created_at) > weekAgo).length;
+    document.getElementById('sup-week').textContent = weekCount;
+
+    // Filtres agents
+    const filterBar = document.getElementById('sup-agent-filters');
+    filterBar.innerHTML = '<div class="filter-chip active" onclick="filterByAgent(null,this)">Tous</div>';
+    agents.forEach(agent => {
+      const chip = document.createElement('div');
+      chip.className = 'filter-chip';
+      chip.textContent = agent;
+      chip.onclick = function(){ filterByAgent(agent, this); };
+      filterBar.appendChild(chip);
+    });
+
+    // Rendu PDV
+    renderSupPDV(supAllPDV);
+
+    // Performance agents
+    renderAgentPerf(agents, supAllPDV);
+
+  } catch(e){ console.error('Supervisor data error:', e); }
+}
+
+function filterByAgent(agent, chip){
+  supFilterAgent = agent;
+  document.querySelectorAll('#sup-agent-filters .filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  const filtered = agent ? supAllPDV.filter(p => p.agent_nom === agent) : supAllPDV;
+  renderSupPDV(filtered);
+}
+
+function renderSupPDV(pdvs){
+  const list = document.getElementById('sup-pdv-list');
+  document.getElementById('sup-pdv-count').textContent = pdvs.length;
+  if(pdvs.length === 0){
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);font-size:.75rem">Aucun PDV</div>';
+    return;
+  }
+  list.innerHTML = pdvs.map(p => {
+    const date = new Date(p.created_at);
+    const dateStr = date.toLocaleDateString('fr-DZ',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const statut = p.statut_client || 'prospect';
+    const statusClass = statut.includes('direct') ? 'status-actif' : statut === 'Inactif' ? 'status-inactif' : 'status-prospect';
+    return `<div class="pdv-card">
+      <div class="pdv-card-top">
+        <div class="pdv-name">${p.nom_commerce || 'Sans nom'}</div>
+        <span class="pdv-type type-T" style="font-size:.55rem">${p.type_magasin || '—'}</span>
+      </div>
+      <div class="pdv-addr">📍 ${p.commune || ''} · ${p.wilaya || ''}</div>
+      <div class="pdv-status-row" style="margin-top:6px;justify-content:space-between">
+        <span class="pdv-status ${statusClass}">${statut}</span>
+        <span style="font-size:.6rem;color:var(--text3)">👤 ${p.agent_nom || '—'} · ${dateStr}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAgentPerf(agents, pdvs){
+  const list = document.getElementById('sup-agents-list');
+  if(agents.length === 0){ list.innerHTML = ''; return; }
+  list.innerHTML = agents.map(agent => {
+    const agentPDV = pdvs.filter(p => p.agent_nom === agent);
+    const today = new Date().toDateString();
+    const todayPDV = agentPDV.filter(p => new Date(p.created_at).toDateString() === today).length;
+    const initials = agent.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="agent-card" onclick="filterByAgent('${agent}', document.querySelector('[onclick*=\'${agent}\']') || document.querySelector('.filter-chip'))">
+      <div class="agent-card-top">
+        <div class="agent-avatar-lg">${initials}</div>
+        <div class="agent-info-lg">
+          <div class="agent-name-lg">${agent}</div>
+          <div class="agent-stats-lg">${todayPDV} aujourd'hui · ${agentPDV.length} total</div>
+        </div>
+        <div class="agent-pdv-count">${agentPDV.length}</div>
+      </div>
+      <div class="pdv-bar-wrap">
+        <div class="pdv-bar-bg"><div class="pdv-bar-fill" style="width:${Math.min(100,agentPDV.length*5)}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════
@@ -1426,13 +1618,27 @@ async function doLogin(){
       .eq('id', currentUser.id)
       .single();
 
-    currentUser.profile = profile || { nom: email.split('@')[0], role: 'enqueteur' };
+    // Fusionner profil Supabase + metadata JWT
+    const metaRole = data.user.user_metadata?.role;
+    const metaNom  = data.user.user_metadata?.nom;
+    currentUser.profile = profile || { 
+      nom:  metaNom  || email.split('@')[0], 
+      role: metaRole || 'enqueteur' 
+    };
+    if(metaNom  && !currentUser.profile.nom)  currentUser.profile.nom  = metaNom;
+    if(metaRole && !currentUser.profile.role) currentUser.profile.role = metaRole;
 
-    // Mettre à jour l'affichage
-    document.getElementById('home-agent-name').textContent = currentUser.profile.nom;
-
+    const role = currentUser.profile.role || metaRole || 'enqueteur';
     showToast('✓ Connecté · ' + currentUser.profile.nom);
-    goTo('sc-form');
+
+    if(role === 'superviseur' || role === 'admin'){
+      document.getElementById('sup-name').textContent = currentUser.profile.nom;
+      await loadSupervisorData();
+      goTo('sc-supervisor');
+    } else {
+      document.getElementById('home-agent-name').textContent = currentUser.profile.nom;
+      goTo('sc-form');
+    }
   } catch(err) {
     showToast('⚠ ' + (err.message === 'Invalid login credentials' ? 'Email ou mot de passe incorrect' : err.message));
   } finally {
@@ -1459,9 +1665,18 @@ async function checkSession(){
       .select('*')
       .eq('id', currentUser.id)
       .single();
-    currentUser.profile = profile || { nom: session.user.email.split('@')[0], role: 'enqueteur' };
-    document.getElementById('home-agent-name').textContent = currentUser.profile.nom;
-    goTo('sc-home');
+    const metaRole = session.user.user_metadata?.role;
+    const metaNom  = session.user.user_metadata?.nom;
+    currentUser.profile = profile || { nom: metaNom || session.user.email.split('@')[0], role: metaRole || 'enqueteur' };
+    const role = currentUser.profile.role || metaRole || 'enqueteur';
+    if(role === 'superviseur' || role === 'admin'){
+      document.getElementById('sup-name').textContent = currentUser.profile.nom;
+      await loadSupervisorData();
+      goTo('sc-supervisor');
+    } else {
+      document.getElementById('home-agent-name').textContent = currentUser.profile.nom;
+      goTo('sc-home');
+    }
   }
 }
 
