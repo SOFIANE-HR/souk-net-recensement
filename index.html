@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#FFC000"/>
 <title>SOUK-NET Recensement</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -690,7 +691,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         <input type="hidden" id="gps-lng" value=""/>
         <input type="hidden" id="gps-acc" value=""/>
       </div>
-      <div class="form-group"><label class="form-label">TDLinx (Code unique PDV)</label><input class="form-input" type="text" placeholder="Code TDLinx si disponible"/></div>
+      <div class="form-group">
+        <label class="form-label">TDLinx (Code unique PDV)</label>
+        <input class="form-input" type="text" id="tdlinx-input" placeholder="Code TDLinx si disponible"/>
+        <input type="file" id="qr-input" accept="image/*" capture="environment" style="display:none" onchange="scanQRCode(event)"/>
+        <button type="button" onclick="document.getElementById('qr-input').click()" style="
+          margin-top:8px;width:100%;background:rgba(255,192,0,.08);
+          border:1.5px dashed var(--gold);border-radius:8px;
+          padding:10px;color:var(--gold);font-size:.75rem;font-weight:800;
+          cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          📷 Scanner le QR Code TDLinx
+        </button>
+        <div id="qr-result" style="display:none;margin-top:6px;font-size:.68rem;color:#27AE60;text-align:center"></div>
+      </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Personne de contact</label><input class="form-input" type="text" placeholder="Nom contact"/></div>
         <div class="form-group"><label class="form-label">Mobile contact</label><input class="form-input" type="tel" placeholder="07XX XX XX XX"/></div>
@@ -1857,6 +1870,38 @@ setMobileVH();
 window.addEventListener('resize', setMobileVH);
 window.addEventListener('orientationchange', () => setTimeout(setMobileVH, 200));
 
+
+
+// ── SCAN QR CODE TDLINX ──
+function scanQRCode(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = typeof jsQR !== 'undefined' ? jsQR(imageData.data, imageData.width, imageData.height) : null;
+      if(code && code.data){
+        document.getElementById('tdlinx-input').value = code.data;
+        const res = document.getElementById('qr-result');
+        res.style.display = 'block';
+        res.textContent = '✓ QR Code détecté : ' + code.data;
+        showToast('✓ TDLinx scanné : ' + code.data);
+      } else {
+        showToast('⚠ Aucun QR Code détecté — saisissez manuellement');
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
 
 // ── WILAYAS & COMMUNES ALGÉRIE ──
 const WILAYAS_COMMUNES = {
