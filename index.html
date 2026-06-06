@@ -678,12 +678,18 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
         <input class="form-input" type="text" id="commune-input" list="commune-list" placeholder="Saisir ou choisir une commune..." autocomplete="off"/>
         <datalist id="commune-list"></datalist>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">N° Bâtiment</label><input class="form-input" type="text" placeholder="Ex: 12"/></div>
-        <div class="form-group"><label class="form-label">N° Local / Boutique</label><input class="form-input" type="text" placeholder="Ex: 03"/></div>
-      </div>
+      <div class="form-group"><label class="form-label">N° Local / Magasin / Boutique</label><input class="form-input" type="text" placeholder="Ex: 03"/></div>
       <div class="form-group"><label class="form-label">Adresse</label><input class="form-input" type="text" placeholder="Rue, numéro..."/></div>
-
+      <div class="form-group">
+        <label class="form-label">GPS Auto-détecté</label>
+        <div id="gps-badge" class="gps-badge" onclick="captureGPS()" style="cursor:pointer">
+          <span class="gps-dot" id="gps-dot"></span>
+          <span id="gps-text">Appuyer pour capturer le GPS...</span>
+        </div>
+        <input type="hidden" id="gps-lat" value=""/>
+        <input type="hidden" id="gps-lng" value=""/>
+        <input type="hidden" id="gps-acc" value=""/>
+      </div>
       <div class="form-group"><label class="form-label">TDLinx (Code unique PDV)</label><input class="form-input" type="text" placeholder="Code TDLinx si disponible"/></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Personne de contact</label><input class="form-input" type="text" placeholder="Nom contact"/></div>
@@ -699,16 +705,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
           <option>N/A (GPS capturé)</option><option>Refus du gérant</option>
           <option>Signal faible</option><option>Appareil défectueux</option>
         </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">GPS Auto-détecté</label>
-        <div id="gps-badge" class="gps-badge" onclick="captureGPS()" style="cursor:pointer">
-          <span class="gps-dot" id="gps-dot"></span>
-          <span id="gps-text">Appuyer pour capturer le GPS...</span>
-        </div>
-        <input type="hidden" id="gps-lat" value=""/>
-        <input type="hidden" id="gps-lng" value=""/>
-        <input type="hidden" id="gps-acc" value=""/>
       </div>
     </div>
 
@@ -1236,8 +1232,7 @@ function collectFormData(){
     wilaya:                getInputByLabel('Wilaya'),
     commune:               getInputByLabel('Commune'),
     adresse:               getInputByLabel('Adresse'),
-    num_batiment:          getInputByLabel('N° Bâtiment'),
-    num_local:             getInputByLabel('N° Local / Boutique'),
+    num_local:             getInputByLabel('N° Local / Magasin / Boutique'),
     store_location_a:      getInputByLabel('Store Location A'),
     store_location_b:      getInputByLabel('Store Location B'),
     store_location_c:      getInputByLabel('Store Location C'),
