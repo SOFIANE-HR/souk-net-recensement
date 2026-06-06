@@ -523,108 +523,21 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
       <button class="dn-btn" onclick="goTo('sc-dn-seg')">📊 Relevé KPI DN — Distribution Numérique</button>
     </div>
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-val">47</div><div class="stat-lbl">PDV Recens.</div></div>
-      <div class="stat-card"><div class="stat-val">128</div><div class="stat-lbl">Visites</div></div>
-      <div class="stat-card"><div class="stat-val">284</div><div class="stat-lbl">Photos</div></div>
-      <div class="stat-card"><div class="stat-val" style="color:#27AE60">52.3%</div><div class="stat-lbl">SoS Moy.</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-pdv">0</div><div class="stat-lbl">PDV Recens.</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-visites">0</div><div class="stat-lbl">Visites</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-photos">—</div><div class="stat-lbl">Photos</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-sos" style="color:#27AE60">—</div><div class="stat-lbl">SoS Moy.</div></div>
     </div>
-    <div class="section-title">Points de Vente <span class="section-count">47</span></div>
-
-    <div class="pdv-card" onclick="goFiche('Carrefour Market 071','Hyper · Hydra, Alger','H','Actif direct',52.1,14,91,2,'K. Benaissa')">
-      <div class="pdv-card-top">
-        <div class="pdv-name">Carrefour Market 071</div>
-        <span class="pdv-type type-H">Hyper</span>
-      </div>
-      <div class="pdv-addr">📍 Hydra, Alger · 36.7490° N</div>
-      <div class="pdv-bar-wrap">
-        <div class="pdv-bar-bg"><div class="pdv-bar-fill" style="width:52.1%"></div></div>
-        <div class="pdv-sos">52.1%</div>
-      </div>
-      <div class="pdv-status-row">
-        <span class="pdv-status status-actif">Actif direct</span>
-        <span class="pdv-visits">12 visites · Dernière: 09h42</span>
+    <div class="section-title">Points de Vente <span class="section-count" id="pdv-count">0</span></div>
+    <div id="pdv-list">
+      <div style="text-align:center;padding:40px 16px;color:var(--text3)">
+        <div style="font-size:2rem;margin-bottom:8px">🏪</div>
+        <div style="font-size:.78rem">Chargement des PDV...</div>
       </div>
     </div>
-
-    <div class="pdv-card" onclick="goFiche('Ardis Mohammadia','Super · Mohammadia, Alger','S','Actif indirect',44.8,10,84,1,'K. Benaissa')">
-      <div class="pdv-card-top">
-        <div class="pdv-name">Ardis Mohammadia</div>
-        <span class="pdv-type type-S">Super</span>
-      </div>
-      <div class="pdv-addr">📍 Mohammadia, Alger · 36.7310° N</div>
-      <div class="pdv-bar-wrap">
-        <div class="pdv-bar-bg"><div class="pdv-bar-fill mid" style="width:44.8%"></div></div>
-        <div class="pdv-sos mid">44.8%</div>
-      </div>
-      <div class="pdv-status-row">
-        <span class="pdv-status status-actif">Actif indirect</span>
-        <span class="pdv-visits">8 visites · Dernière: 17h11</span>
-      </div>
-    </div>
-
-    <div class="pdv-card" onclick="goFiche('Family Shop Hydra','Superette · Hydra, Alger','T','Prospect',38.6,6,72,4,'K. Benaissa')">
-      <div class="pdv-card-top">
-        <div class="pdv-name">Family Shop Hydra</div>
-        <span class="pdv-type type-T">Supérette</span>
-      </div>
-      <div class="pdv-addr">📍 Hydra, Alger · 36.7450° N</div>
-      <div class="pdv-bar-wrap">
-        <div class="pdv-bar-bg"><div class="pdv-bar-fill low" style="width:38.6%"></div></div>
-        <div class="pdv-sos low">38.6%</div>
-      </div>
-      <div class="pdv-status-row">
-        <span class="pdv-status status-prospect">Prospect</span>
-        <span class="pdv-visits">3 visites · Dernière: 14h20</span>
-      </div>
-    </div>
-
-    <div class="pdv-card" onclick="goFiche('Maxi Market Kouba','Super · Kouba, Alger','S','Actif direct',61.4,18,95,0,'K. Benaissa')">
-      <div class="pdv-card-top">
-        <div class="pdv-name">Maxi Market Kouba</div>
-        <span class="pdv-type type-S">Super</span>
-      </div>
-      <div class="pdv-addr">📍 Kouba, Alger · 36.7380° N</div>
-      <div class="pdv-bar-wrap">
-        <div class="pdv-bar-bg"><div class="pdv-bar-fill" style="width:61.4%"></div></div>
-        <div class="pdv-sos">61.4%</div>
-      </div>
-      <div class="pdv-status-row">
-        <span class="pdv-status status-actif">Actif direct</span>
-        <span class="pdv-visits">15 visites · Dernière: 11h05</span>
-      </div>
-    </div>
-
-    <div class="pdv-card" onclick="goFiche('Express Store Bab Ezzouar','Supérette · Bab Ezzouar','T','Inactif',22.1,4,55,6,'K. Benaissa')">
-      <div class="pdv-card-top">
-        <div class="pdv-name">Express Store Bab Ezzouar</div>
-        <span class="pdv-type type-T">Supérette</span>
-      </div>
-      <div class="pdv-addr">📍 Bab Ezzouar, Alger · 36.7200° N</div>
-      <div class="pdv-bar-wrap">
-        <div class="pdv-bar-bg"><div class="pdv-bar-fill low" style="width:22.1%"></div></div>
-        <div class="pdv-sos low">22.1%</div>
-      </div>
-      <div class="pdv-status-row">
-        <span class="pdv-status status-inactif">Inactif</span>
-        <span class="pdv-visits">2 visites · Dernière: Hier</span>
-      </div>
-    </div>
-
-    <div class="section-title">Dernières Visites</div>
-    <div class="visit-item">
-      <div class="visit-icon">📷</div>
-      <div class="visit-info"><div class="visit-name">Carrefour Market 071</div><div class="visit-time">Aujourd'hui · 09h42 · Boissons</div></div>
-      <div class="visit-sos">52.1%</div>
-    </div>
-    <div class="visit-item">
-      <div class="visit-icon">📷</div>
-      <div class="visit-info"><div class="visit-name">Maxi Market Kouba</div><div class="visit-time">Aujourd'hui · 11h05 · Laits</div></div>
-      <div class="visit-sos">61.4%</div>
-    </div>
-    <div class="visit-item">
-      <div class="visit-icon">📷</div>
-      <div class="visit-info"><div class="visit-name">Ardis Mohammadia</div><div class="visit-time">Aujourd'hui · 17h11 · Boissons</div></div>
-      <div class="visit-sos">44.8%</div>
+    <div class="section-title">Dernières Saisies</div>
+    <div id="recent-list">
+      <div style="text-align:center;padding:20px 16px;color:var(--text3);font-size:.72rem">Aucune saisie récente</div>
     </div>
     <div style="height:20px"></div>
   </div>
