@@ -892,13 +892,18 @@ body{font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:center;jus
     <!-- Photos -->
     <div class="form-section">
       <div class="form-section-title">📷 Photos Linéaire</div>
-      <div class="photo-grid">
-        <div class="photo-thumb" style="background:rgba(255,192,0,.05);border-color:rgba(255,192,0,.3)">
-          <span style="color:var(--gold);font-size:.65rem;text-align:center">Photo<br/>1<br/>✓</span>
+      <!-- Input file caché pour la camera -->
+      <input type="file" id="photo-input" accept="image/*" capture="environment" multiple style="display:none" onchange="handlePhotos(event)"/>
+      
+      <div class="photo-grid" id="photo-grid">
+        <div class="photo-add" id="photo-add-btn" onclick="document.getElementById('photo-input').click()">
+          <div style="text-align:center">
+            <div style="font-size:1.6rem">📷</div>
+            <div style="font-size:.6rem;color:var(--gold);margin-top:4px">Ajouter</div>
+          </div>
         </div>
-        <div class="photo-thumb"><span>Photo 2</span></div>
-        <div class="photo-add" onclick="showToast('Appareil photo ouvert')">+</div>
       </div>
+      <div style="font-size:.62rem;color:var(--text3);margin-bottom:12px" id="photo-count">0 photo(s) ajoutée(s)</div>
       <div class="form-group"><label class="form-label">Notes terrain</label>
         <textarea class="form-textarea" placeholder="Observations, potentiel, problèmes d'accès..."></textarea>
       </div>
@@ -1518,6 +1523,53 @@ function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+
+// ── GESTION PHOTOS ──
+let photosBase64 = [];
+
+function handlePhotos(event){
+  const files = Array.from(event.target.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e){
+      photosBase64.push(e.target.result);
+      renderPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+  // Reset input pour permettre de re-sélectionner la même photo
+  event.target.value = '';
+}
+
+function renderPhotos(){
+  const grid = document.getElementById('photo-grid');
+  const addBtn = document.getElementById('photo-add-btn');
+  
+  // Supprimer les anciennes miniatures
+  grid.querySelectorAll('.photo-thumb').forEach(t => t.remove());
+  
+  // Ajouter les miniatures
+  photosBase64.forEach((src, idx) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'photo-thumb';
+    thumb.innerHTML = `
+      <img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>
+      <div onclick="removePhoto(${idx})" style="position:absolute;top:2px;right:2px;background:rgba(255,68,68,.8);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;cursor:pointer;color:white">✕</div>`;
+    thumb.style.position = 'relative';
+    grid.insertBefore(thumb, addBtn);
+  });
+  
+  document.getElementById('photo-count').textContent = photosBase64.length + ' photo(s) ajoutée(s)';
+  
+  // Masquer bouton ajout si 5 photos max
+  addBtn.style.display = photosBase64.length >= 5 ? 'none' : 'flex';
+}
+
+function removePhoto(idx){
+  photosBase64.splice(idx, 1);
+  renderPhotos();
 }
 
 // ── GPS RÉEL ──
